@@ -126,6 +126,7 @@
     .hud .stat span { color: var(--peach); }
     .hud .time span { color: var(--pink); }
 
+    .scene-wrap { position: relative; }
     .scene {
       position: relative;
       display: grid;
@@ -225,7 +226,8 @@
         <div class="stat time">Time: <span id="timeLeft">30</span>s</div>
         <button class="btn" id="startBtn" style="padding:10px 22px;font-size:.95rem;">Start round</button>
       </div>
-      <div class="scene" id="scene">
+      <div class="scene-wrap">
+        <div class="scene" id="scene"></div>
         <div class="overlay" id="overlay">
           <h3>Ready to spot some bums? 🍑</h3>
           <p>Find all the hidden peaches before the timer runs out. Watch out — the oranges, mangoes and tomatoes are decoys!</p>
