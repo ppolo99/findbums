@@ -161,6 +161,18 @@
     .overlay p { color: var(--muted); max-width: 360px; line-height: 1.55; }
     .hidden { display: none !important; }
 
+    /* ---------- confetti ---------- */
+    .confetti-piece {
+      position: fixed; top: -24px; z-index: 60;
+      width: 10px; height: 14px; border-radius: 2px;
+      pointer-events: none; will-change: transform, opacity;
+      animation: confetti-fall linear forwards;
+    }
+    @keyframes confetti-fall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(108vh) rotate(720deg); opacity: 0.9; }
+    }
+
     /* ---------- how it works ---------- */
     .how { max-width: 900px; margin: 0 auto; padding: 30px 24px 100px; }
     .how h2 {
@@ -336,16 +348,45 @@
       }, 1000);
     }
 
+    function launchConfetti() {
+      const colors = ['#ff9a76','#ff5edb','#8b5efc','#3ddc97','#ffd166'];
+      const pieces = 90;
+      for (let i = 0; i < pieces; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        const isPeach = Math.random() < 0.22;
+        if (isPeach) {
+          c.textContent = '🍑';
+          c.style.background = 'transparent';
+          c.style.width = 'auto';
+          c.style.height = 'auto';
+          c.style.fontSize = (16 + Math.random() * 12) + 'px';
+        } else {
+          c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        }
+        c.style.left = (Math.random() * 100) + 'vw';
+        c.style.animationDuration = (2.2 + Math.random() * 2) + 's';
+        c.style.animationDelay = (Math.random() * 0.5) + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 5000);
+      }
+    }
+
     function endRound(won) {
       playing = false;
       clearInterval(timer);
       pop(won ? 880 : 140);
+      if (won) {
+        launchConfetti();
+        pop(990); setTimeout(() => pop(1180), 140);
+      }
       overlay.innerHTML = won
-        ? `<h3>All bums spotted! 🍑🎉</h3>
-           <p>You found all ${TOTAL_TARGETS} with <strong>${timeLeft}s</strong> to spare. Cheeky and quick.</p>
+        ? `<h3>🎉 You found all the bums! 🍑</h3>
+           <p>All ${TOTAL_TARGETS} spotted with <strong>${timeLeft}s</strong> to spare — cheeky <em>and</em> quick! 🏆<br><br>
+           This is just a little taster. More bums, bigger scenes and a proper leaderboard are <strong>coming soon</strong> to findbums.com.</p>
            <button class="btn" id="again">Play again</button>`
-        : `<h3>Time's up! ⏰</h3>
-           <p>You spotted ${found} of ${TOTAL_TARGETS} bums. So close — give it another go.</p>
+        : `<h3>Better luck next time! 🍑</h3>
+           <p>You spotted ${found} of ${TOTAL_TARGETS} before the clock ran out. So close — fancy another go?</p>
            <button class="btn" id="again">Try again</button>`;
       overlay.classList.remove('hidden');
       document.getElementById('again').addEventListener('click', startRound);
